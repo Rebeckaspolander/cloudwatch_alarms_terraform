@@ -7,3 +7,12 @@ variable "alarm_email" {
   type = string
   default = "rebeckaspolander@yahoo.se"
 }
+
+variable "prefix" {
+  type = string
+}
+
+variable "image" {
+  type = string
+
+}
