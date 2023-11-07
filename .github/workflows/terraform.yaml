@@ -16,6 +16,8 @@ jobs:
       AWS_REGION: eu-west-1
       IMAGE: 244530008913.dkr.ecr.eu-west-1.amazonaws.com/sporeb15:latest
       PREFIX: sporeb15
+      working-directory: ./infra
+
 
     steps:
       - name: Checkout code
@@ -27,18 +29,20 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init
+        working-directory: ${{env.working-directory}}
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -var "prefix=$PREFIX" -var "image=$IMAGE" -no-color
-        working-directory: ./infra
-
+        working-directory: ${{env.working-directory}}
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+        working-directory: ${{env.working-directory}}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -var "prefix=$PREFIX" -var "image=$IMAGE" -auto-approve
+        working-directory: ${{env.working-directory}}
 
